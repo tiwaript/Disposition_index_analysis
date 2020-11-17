@@ -17,4 +17,6 @@ dat_lme_long<-reshape(dat_lme,varying = c("age_6","age_12","age_18",
                                           "dispindex_6","dispindex_12","dispindex_18",
                                           "glucosef_6","glucosef_12","glucosef_18"),
                       direction = "long",idvar = "key",sep="_")
-##### data for 
+##### data for Pregnancy bergman plot #######
+dat_indiaGDM<-read.spss("./Data/Serial Glucose_IndiaGDM_n 48.sav",
+                        to.data.frame = T,use.value.labels = T)
