@@ -135,7 +135,7 @@ ggplot(data = na.omit(dat_bergplot[, c("homa_beta_6","homa_sens_6","class")]),
         legend.margin = margin(6, 6, 6, 6)
       )
 ######################################################################
-#### mat ind 6 vs insulogenic index 6
+#### mat ind 6 vs insulogenic index 6########################################
     ggplot(data = na.omit(dat_bergplot[, c("mat_ind_6","ins_index_ware6","class")]), 
            aes(x = mat_ind_6,  y = ins_index_ware6, color = class)) +
       geom_point(shape = 1, size = 2) + scale_color_manual(values = c('chartreuse4', 'red')) +
@@ -180,4 +180,20 @@ ggplot(data = na.omit(dat_bergplot[, c("homa_beta_6","homa_sens_6","class")]),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)
       )
-    
+######################India gdm plot ##################################################
+png("Bergman plot IndiaGDM pregnancy visits.png",height=6,width=6,units = 'in',res=300)
+        ggplot(data = na.omit(dat_indiaGDM_long), 
+           aes(x = HOMAS,  y = HOMAB, color = time)) +
+      geom_point(shape = 1, size = 2)  +
+      geom_smooth(aes(group = time, color = time),span=1) + 
+      ggtitle("Bergman Plot NGT Pregnancy Visits") +
+      xlab("HOMA-S")+ylab("HOMA-B")+
+      theme(plot.title = element_text(hjust = 0.5, face = "bold")) + 
+      #xlab("log Homa sensitivity") +ylab("log Homa Beta") + 
+      theme(
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      )    
+dev.off()
