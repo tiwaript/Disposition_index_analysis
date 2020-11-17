@@ -20,3 +20,13 @@ dat_lme_long<-reshape(dat_lme,varying = c("age_6","age_12","age_18",
 ##### data for Pregnancy bergman plot #######
 dat_indiaGDM<-read.spss("./Data/Serial Glucose_IndiaGDM_n 48.sav",
                         to.data.frame = T,use.value.labels = T)
+rownames(dat_indiaGDM)<-dat_indiaGDM[1]
+##### connvert to long 
+
+dat_indiaGDM_long<-dat_indiaGDM[,c("en_no","HOMA_B_V1","HOMA_B_V2","HOMA_B_v3",
+                                   "HOMA_S_V1", "HOMA_S_V2" ,"HOMA_S_v3")]
+colnames(dat_indiaGDM_long)<-c("en_no","HOMAB_V1","HOMAB_V2","HOMAB_v3",
+                                 "HOMAS_V1", "HOMAS_V2" ,"HOMAS_v3")
+dat_indiaGDM_long<-reshape(dat_indiaGDM_long,varying =c("HOMAB_V1","HOMAB_V2","HOMAB_v3",
+                                                        "HOMAS_V1", "HOMAS_V2" ,"HOMAS_v3") ,
+                           direction = "long",idvar = "en_no",sep="_")
