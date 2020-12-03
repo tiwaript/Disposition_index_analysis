@@ -1,19 +1,22 @@
 ### load library ####
 require(ggplot2)
 ### homa beta vs homa sens 18 years  ############### 
+png("Bergman_plot_18_year.png",height=6,width=7,units = 'in',res=300)
 ggplot(data = na.omit(dat_bergplot[, c("homa_sens_18","homa_beta_18","class")]), 
        aes(x = homa_sens_18,  y = homa_beta_18, color = class)) +
   geom_point(shape = 1, size = 2) + scale_color_manual(values = c('chartreuse4', 'red')) +
   geom_smooth(aes(group = class, color = class)) + 
-  ggtitle("Bergman_plot(18years)") +
+  ggtitle(" 18 years") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold")) + 
   #xlab("log Homa sensitivity") +ylab("log Homa Beta") + 
+  xlab("Insulin sensitivity (HOMA-S)") +ylab("Insulin Secretion (HOMA-B)")+
   theme(
     legend.position = c(.95, .95),
     legend.justification = c("right", "top"),
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6)
   )
+dev.off()
 ### 18 years x, y limit #######
 ggplot(data = na.omit(dat_bergplot[, c("homa_beta_18","homa_sens_18","class")]), 
        aes(x = homa_sens_18,  y = homa_beta_18, color = class)) +
@@ -197,3 +200,36 @@ png("Bergman plot IndiaGDM pregnancy visits.png",height=6,width=6,units = 'in',r
         legend.margin = margin(6, 6, 6, 6)
       )    
 dev.off()
+################################################################
+ggplot(data = dat_indiaGDM_long, 
+       aes(x = insS,  y = insR, color = time)) +
+  geom_point(shape = 1, size = 2)  +
+  geom_smooth(aes(group = time, color = time),span=1) + 
+  ggtitle("Bergman Plot NGT Pregnancy Visits") +
+  ylim(c(0,10))+
+  xlab("HOMA-S")+ylab("HOMA-B")+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) + 
+  #xlab("log Homa sensitivity") +ylab("log Homa Beta") + 
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )    
+
+################################################
+ggplot(data = dat_indiaGDM_long, 
+       aes(x = MatIndex,  y = IGI, color = time)) +
+  geom_point(shape = 1, size = 2)  +
+  geom_smooth(aes(group = time, color = time),span=0.5) + 
+  ggtitle("Bergman Plot NGT Pregnancy Visits") +
+  ylim(c(1,3))+
+  xlab("HOMA-S")+ylab("HOMA-B")+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) + 
+  #xlab("log Homa sensitivity") +ylab("log Homa Beta") + 
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )    
