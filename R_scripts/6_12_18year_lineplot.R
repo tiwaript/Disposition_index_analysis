@@ -43,6 +43,7 @@ ggplot(dat_lineplot,aes(homa_sens,pred))+
   ylab("HOMA-B")+xlab("HOMA-S")+facet_wrap(.~class)+scale_size_manual(c(1:3))
 
 ############################################
+<<<<<<< HEAD
 png("6_12_18_year_lineplot_logbeta.png",height=5,width=8,units = 'in',res=300)
 ggplot(dat_lineplot,aes(homa_sens,log(pred,base=10)))+
   #ggplot(dat_lineplot,aes(homa_sens,pred))+
@@ -52,3 +53,10 @@ ggplot(dat_lineplot,aes(homa_sens,log(pred,base=10)))+
   ylab("log(HOMA-B)")+xlab("HOMA-S")+facet_wrap(.~class)
   #ylab("HOMA-B")+xlab("HOMA-S")+facet_wrap(.~class)
 dev.off()
+=======
+ggplot(dat_lineplot,aes(homa_sens,log(pred,base=10)))+
+  geom_line(aes(color=factor(class),linetype=factor(time)),size=0.9)+
+  scale_linetype_manual(values=c("solid", "dashed","dotted"))+
+  scale_color_manual(values = c('chartreuse4', 'red'))+
+  ylab("HOMA-B")+xlab("HOMA-S")+facet_wrap(.~class)
+>>>>>>> f33db1f265e5070a3ae821fffaf0aaead2b2e5d6
