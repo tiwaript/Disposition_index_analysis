@@ -1,4 +1,4 @@
-##### trajectory plot ##########
+##### trajectory plot ########## ###
 require(ggplot2)
 png("Trajectory_plot_full_data.png",height=6,width=8,units = 'in',res=300)
 ggplot(data = dat_bergplot, aes(x = log(homa_sens_6,base = 10),  y = log(homa_beta_6,base=10)))+
