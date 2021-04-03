@@ -70,7 +70,123 @@ dat_indoDan$en_no[249:514]<-dat_indoDan$ID[249:514]
 dat_indoDan_long<-dat_indoDan_long[,c(1:4,11:14)]
 
 dat_patcat_long<-reshape(dat_patcat, idvar = "Sr.No", 
-                         varying = list(c(6,8), c(7,9)), 
+                         varying = list(c(4,6,8), c(5,7,9)), 
                          direction="long",
                          v.names = c('HOMAB','HOMAS'),sep="_")
+dat_patcat_long$time<-gsub("1","Early Pregnancy",dat_patcat_long$time)
+dat_patcat_long$time<-gsub("2","1",dat_patcat_long$time)
+dat_patcat_long$time<-gsub("3","2",dat_patcat_long$time)
+dat_patcat_long<-dat_patcat_long[,-c(1,4,5)]
 dat_patcat_long$StudyCode<-rep("Patcat",nrow(dat_patcat_long))
+##########################################################################
+dat_PMNS<-read.spss("./Data/pmns original.sav",to.data.frame = T,use.value.labels = T)
+dat_var_PMNS<-read.csv("./Data/PMNS_var_sel_modelling.csv",header = F)
+colnames(dat_var_PMNS)[1]<-'var'
+dat_PMNS_model<-dat_PMNS[,which(colnames(dat_PMNS) %in% dat_var_PMNS$V1)]
+
+dat_PMNS_model<-merge(dispindex_coef,dat_PMNS_model,by=0)
+dat_PMNS_model<-dat_PMNS_model[,-60] ## thick1
+dat_PMNS_model<-dat_PMNS_model[,-70] ## cereb2
+########################################################################
+dat_fitfor2<-read.spss("./Data/FITFOR2_study_Pradeep.sav",use.value.labels = T,to.data.frame = T)
+dat_fitfor_long<-reshape(dat_fitfor2[,c(1,8:13,14)], idvar = "rspnr", 
+                          varying = list(c(2:4), c(5:7)), 
+                          direction="long",
+                          v.names = c('HOMAB','HOMAS'),sep="_")
+dat_fitfor_long$StudyCode<-rep("Fitfor2",nrow(dat_fitfor_long))
+colnames(dat_fitfor_long)[1]<-'ID'
+dat_fitfor_long<-dat_fitfor_long[,c(1,2,6,3:5)]
+dat_patcatindodanfit_long<-rbind(dat_patcatindodan_long,dat_fitfor_long)
+######################################################################
+dat_mexican<-read.spss("./Data/Mexican Study for Pradeep.sav",
+                       to.data.frame = T,use.value.labels = T)
+
+dat_mexican_long<-reshape(dat_mexican[,c(1,4:5,8:9,12:13,14)], idvar = "File", 
+                         varying = list(c(2,4,6), c(3,5,7)), 
+                         direction="long",
+                         v.names = c('HOMAB','HOMAS'),sep="_")
+dat_mexican_long$time<-factor(dat_mexican_long$time)
+dat_mexican_long$StudyCode<-rep("Mexican",nrow(dat_mexican_long))
+dat_mexican_long<-dat_mexican_long[,c(1,2,6,3:5)]
+colnames(dat_mexican_long)[1]<-'key'
+dat_patcatindodanfitmexi_long<-rbind(dat_patcatindodanfit_long,dat_mexican_long)
+dat_patcatindodanfitmexi_long$StudyCode<-
+  factor(dat_patcatindodanfitmexi_long$StudyCode,
+         levels = c("Indian Cohort","Mexican","Danish Cohort", "Patcat", "Fitfor2" ))
+index_noneurope<-which(dat_patcatindodanfitmexi_long$StudyCode %in% c("Indian Cohort","Mexican"))
+index_ind<-which(dat_patcatindodanfitmexi_long$StudyCode=="Indian Cohort")
+index_mexico<-which(dat_patcatindodanfitmexi_long$StudyCode=="Mexican")
+dat_patcatindodanfitmexi_long$cohort<-NA
+dat_patcatindodanfitmexi_long$cohort[-c(index_ind,index_mexico)]<-"Europe"
+dat_patcatindodanfitmexi_long$cohort[index_ind]<-"Indian"
+dat_patcatindodanfitmexi_long$cohort[index_mexico]<-"Mexican"
+dat_patcatindodanfitmexi_long$cohort<-factor(dat_patcatindodanfitmexi_long$cohort,
+                                             levels = c("Indian","Mexican","Europe"))
+###################################
+dat_danish<-dat_indoDan[dat_indoDan$StudyCode=="Danish Cohort",]
+dat_india<-dat_indoDan[dat_indoDan$StudyCode=="Indian Cohort",]
+################################
+dat_LIP<-read.spss("./Data/LIP data for Pradeep n=266.sav",
+                   to.data.frame = T,use.value.labels = T)
+dat_LIP_long<-reshape(dat_LIP[,c(1,2,5,6,9,10,13,14)], idvar = "File", 
+                            varying = list(c(3,5,7), c(4,6,8)), 
+                            direction="long",
+                            v.names = c('HOMAB','HOMAS'),sep="_")
+dat_LIP_long$time<-factor(dat_LIP_long$time)
+dat_LIP_long<-dat_LIP_long[,-6]
+dat_India<-read.spss("./Data/Serial glucose_INDO-DANISH & IAEA-B12_n=248.sav",
+                     to.data.frame = T,use.value.labels = T)
+dat_IAEA<-dat_India[dat_India$Study_Code=="IAEA-B12",]
+dat_IndiaGDM<-dat_India[dat_India$Study_Code=="INDO-DANISH",]
+dat_Europe_long<-rbind(dat_patcat_long,dat_fitfor_long,dat_LIP_long)
+dat_fitforLIP_long<-rbind(dat_fitfor_long,dat_LIP_long)
+###################### z score data #######################
+#### India #####################
+dat_India_z<-read.spss("./Data/Z_score_data/INDO-DANISH & IAEA-B12_n=248_Pradeep.sav",
+                       to.data.frame = T,use.value.labels = T)
+dat_India_z_long<-reshape(dat_India_z[,c(1:4,17:22)], idvar = "File", 
+                          varying = list(c(5:7), c(8:10)), 
+                          direction="long",
+                          v.names = c('HOMAB','HOMAS'),sep="_")
+###### Mexico ###############
+dat_mexican_z<-read.spss("./Data/Z_score_data/Mexican Study for Pradeep.sav",
+                         to.data.frame = T, use.value.labels = T)
+dat_mexican_z_long<-reshape(dat_mexican_z[,c(1,2,14:20)], idvar = "File", 
+                          varying = list(c(4:6), c(7:9)), 
+                          direction="long",
+                          v.names = c('HOMAB','HOMAS'),sep="_")
+dat_mexican_z_long$time<-factor(dat_mexican_z_long$time)
+######## Danish data ############
+dat_danish_z<-read.spss("./Data/Z_score_data/LIP data for Pradeep n=266.sav",
+                        to.data.frame = T,use.value.labels = T)
+dat_danish_z_long<-reshape(dat_danish_z[,c(1,2,15:20)], idvar = "ID", 
+                            varying = list(c(3:5), c(6:8)), 
+                            direction="long",
+                            v.names = c('HOMAB','HOMAS'),sep="_")
+dat_danish_z_long$time<-factor(dat_danish_z_long$time)
+######## fitfor@####################
+dat_fitfor2_z<-read.spss("./Data/Z_score_data/FITFOR2_study_Pradeep.sav",
+                        to.data.frame = T,use.value.labels = T)
+dat_fitfor2_z_long<-reshape(dat_fitfor2_z[,c(1,14,15:21)], idvar = "rspnr", 
+                           varying = list(c(4:6), c(7:9)), 
+                           direction="long",
+                           v.names = c('HOMAB','HOMAS'),sep="_")
+dat_fitfor2_z_long$time<-factor(dat_fitfor2_z_long$time)
+####### patcat ###################
+dat_patcat_z<-read.spss("./Data/Z_score_data/Catalano Data.sav",
+                         to.data.frame = T,use.value.labels = T)
+dat_patcat_z_long<-reshape(dat_patcat_z[,c(1:3,11,12,14,15)], idvar = "ID", 
+                            varying = list(c(4:5), c(6:7)), 
+                            direction="long",
+                            v.names = c('HOMAB','HOMAS'),sep="_")
+dat_patcat_z_long$time<-factor(dat_patcat_z_long$time)
+dat_preg_meanmedian<-read.csv("Pregnancy_HOMABS_meanmedian_all_population.csv",header=T)
+dat_preg_meanmedian_1<-read.csv("Pregnancy_HOMABS_meanmedian_indmexeur_patcat.csv",header=T)
+dat_preg_meanmedian_1$Visit<-gsub("3","Late-pregnancy",dat_preg_meanmedian_1$Visit)
+dat_preg_meanmedian_1$Visit<-gsub("2","Mid-pregnancy",dat_preg_meanmedian_1$Visit)
+dat_preg_meanmedian_1$Visit<-gsub("1","Early-pregnancy",dat_preg_meanmedian_1$Visit)
+
+dat_preg_meanmedian_1$Visit<-factor(dat_preg_meanmedian_1$Visit,
+                                    levels = c("Pre-pregnancy","Early-pregnancy",
+                                               "Mid-pregnancy","Late-pregnancy"))
+                                                                           )
